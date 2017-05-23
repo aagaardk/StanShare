@@ -1,0 +1,26 @@
+#beta-binomial mixture model from Martin (2011)
+# Priors
+lam~dgamma(.01,.01)
+alpha.p~dgamma(.01,.01)
+beta.p~dgamma(.01,.01)
+
+# Likelihood
+# Biological model for true abundance
+for (i in 1:R) { # Loops over R sites
+  N[i] ~ dpois(lambda[i])  #Abundance at each site follows a Poisson distribution
+  lambda[i] <- lam
+}
+
+
+# Observation model for replicated counts
+for (i in 1:n) {			# Loops over all n observations
+  C[i] ~ dbin(p[i], N[site.p[i]]) #counts follow a beta-binomial distribution
+  p[i]~dbeta(alpha.p,beta.p)  #detection probability p follows a beta distribution
+}
+
+
+# Derived quantities
+totalN <- sum(N[])	# Estimate total population size across all sites
+p.derived<-alpha.p/(alpha.p+beta.p) #derived detection probability
+rho.derived<-1/(alpha.p+beta.p+1)   #derived correlation coefficient
+}
